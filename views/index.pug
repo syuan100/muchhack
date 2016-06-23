@@ -10,6 +10,12 @@ html(lang="en")
   body
     h1 Upload form
 
+    .success
+      | Your file was successfully uploaded!
+
+    .error
+      | Your file was not uploaded. Please try again.
+
     form.new-asset(method="post", enctype="multipart/form-data")
       | Title*:
       br

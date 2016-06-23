@@ -1,0 +1,47 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    link(rel="stylesheet", type="text/css", href="css/style.css")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
+    script(src="scripts/dropzone.js")
+    script(src="scripts/form-functions.js")
+    script(src="scripts/upload.js")
+    script(src="scripts/download.js")
+  body
+    h1 Uploaded Assets
+
+    .assets
+      each asset in assets
+        .asset
+          .name
+            | Name: #{asset.name}
+          .tags
+            | Tags: #{asset.tags}
+          .category
+            | Category: #{asset.category}
+          .context
+            | Context: #{asset.context}
+          .description
+            | Description: #{asset.description}
+          .definition
+            | Definition: #{asset.definition}
+          .asset_uri
+            | Asset URI: 
+            a(href=asset.asset_uri download)= asset.asset_uri
+          if asset.preview_uri
+            .preview_uri
+              | Preview URI: 
+              a(href=asset.preview_uri download)= asset.preview_uri
+          .version
+            | Version: #{asset.version}
+          .date
+            | Upload Date: #{asset.upload_date}
+          .download_count
+            | Downloads: #{asset.download_count}
+          .view_count
+            | Views: #{asset.view_count}
+          .approval
+            | approval: #{asset.approval}
+          .asset_id
+            | ID: #{asset.asset_id}

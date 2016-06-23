@@ -99,16 +99,36 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
   connection.query(assetQuery, function(err, rows, fields){
     if(err) {
       console.log(err);
+      res.send(500);
     }
     if(rows){
       console.log("success!");
       console.log(rows);
+      res.send(200);
     }
   });
 
   // console.log(query);
 
-})
+});
+
+app.get('/list', function(req,res){
+  var assets = [];
+  connection.query("SELECT * FROM asset;", function(err, rows, fields) {
+    if(err) {
+      console.log(err);
+      res.render('list');
+    }
+    if(rows){
+      console.log("success!");
+      for(var i=0; i<rows.length; i++){
+        assets.push(rows[i]);
+      }
+      console.log("assets:" + assets);
+      res.render('list', {assets: assets});
+    }
+  });
+});
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
