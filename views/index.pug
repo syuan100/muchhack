@@ -1,0 +1,81 @@
+doctype html
+html(lang="en")
+  head
+    title= pageTitle
+    link(rel="stylesheet", type="text/css", href="css/style.css")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
+    script(src="scripts/dropzone.js")
+    script(src="scripts/form-functions.js")
+    script(src="scripts/upload.js")
+  body
+    h1 Upload form
+
+    form.new-asset(method="post", enctype="multipart/form-data")
+      | Title*:
+      br
+      input(type="text", name="title", class="asset-title")
+      br
+      br
+      | Category*:
+      br
+      select(name="category", class="category")
+        option(val='icon')
+          | Icon
+        option(val='term')
+          | Term
+        option(val='font')
+          | Font
+        option(val='logo')
+          | Logo
+        option(val='powerpoint')
+          | Powerpoint
+        option(val='diagram')
+          | Diagram
+        option(val='persona')
+          | Persona
+      .definition.hidden
+        br
+        br
+        | Definition*:
+        br
+        textarea(rows="4", cols="50", class="definition", name="definition")
+      .context.hidden
+        br
+        br
+        | Icon Context*:
+        br
+        select(name="context", class="context")
+          option(val='0')
+            | UI
+          option(val='1')
+            | Corporate Site
+          option(val='2')
+            | General
+      br
+      br
+      | Tags* (Comma Seperated):
+      br
+      input(type="text", name="tags", class="asset-tags")
+      br
+      br
+      | Description:
+      br
+      textarea(rows="4", cols="50", class="asset-description", name="asset-description")
+      .preview-image.hidden
+        br
+        br
+        | Preview Image:
+        br
+        input(type="file", class="preview-image", name="preview-image")
+      br
+      br
+      | Asset Upload:
+      br
+      input(type="file", class="asset-upload", name="asset-upload")
+      br
+      br
+      | Additional Attachments
+      br
+      input(type="file", class="attachment", name="attachment" id="1")
+      .button.upload-submit
+        | Submit

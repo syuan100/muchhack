@@ -1,0 +1,17 @@
+.hidden {
+  display: none;
+}
+
+.button {
+  width: 75px;
+  padding: 10px;
+  text-align: center;
+  margin: 10px 0;
+  background: blue;
+  color: white;
+}
+
+.button:hover {
+  cursor: pointer;
+  background: black;
+}
