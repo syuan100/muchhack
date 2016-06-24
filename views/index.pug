@@ -2,8 +2,27 @@ doctype html
 html(lang="en")
   head
     title= pageTitle
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.core.css")
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.arrow.css")
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.autocomplete.css")
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.clear.css")
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.focus.css")
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.prompt.css")
+    link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.tags.css")
     link(rel="stylesheet", type="text/css", href="css/style.css")
+
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
+    script(src="scripts/textext/js/textext.core.js")
+    script(src="scripts/textext/js/textext.plugin.ajax.js")
+    script(src="scripts/textext/js/textext.plugin.arrow.js")
+    script(src="scripts/textext/js/textext.plugin.autocomplete.js")
+    script(src="scripts/textext/js/textext.plugin.clear.js")
+    script(src="scripts/textext/js/textext.plugin.filter.js")
+    script(src="scripts/textext/js/textext.plugin.focus.js")
+    script(src="scripts/textext/js/textext.plugin.prompt.js")
+    script(src="scripts/textext/js/textext.plugin.suggestions.js")
+    script(src="scripts/textext/js/textext.plugin.tags.js")
+
     script(src="scripts/dropzone.js")
     script(src="scripts/form-functions.js")
     script(src="scripts/upload.js")
@@ -12,6 +31,8 @@ html(lang="en")
 
     .success
       | Your file was successfully uploaded!
+      a(href="list")
+        | See list of assets.
 
     .error
       | Your file was not uploaded. Please try again.
@@ -61,7 +82,7 @@ html(lang="en")
       br
       | Tags* (Comma Seperated):
       br
-      input(type="text", name="tags", class="asset-tags")
+      textarea(name="tags", class="asset-tags", id="assettags", rows="1", cols="50")
       br
       br
       | Description:

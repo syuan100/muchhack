@@ -7,15 +7,28 @@ html(lang="en")
     script(src="scripts/dropzone.js")
     script(src="scripts/form-functions.js")
     script(src="scripts/upload.js")
-    script(src="scripts/download.js")
+    script(src="scripts/asset-functions.js")
   body
     h1 Uploaded Assets
 
+    .confirmation-dialog
+      | Are you sure you want to delete 
+      span.name
+      |  with id 
+      span.id
+      | ?
+      .button.confirm
+        | Yes
+      .button.deny
+        | No
     .assets
       each asset in assets
         .asset
+          .delete-button
+            | Delete
           .name
-            | Name: #{asset.name}
+            | Name:
+            span=asset.name
           .tags
             | Tags: #{asset.tags}
           .category
@@ -44,4 +57,5 @@ html(lang="en")
           .approval
             | approval: #{asset.approval}
           .asset_id
-            | ID: #{asset.asset_id}
+            | ID:
+            span= asset.asset_id

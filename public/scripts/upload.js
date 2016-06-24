@@ -21,6 +21,7 @@ $(document).ready(function(){
     var form = $(".new-asset")[0];
     console.log(form);
     var formData = new FormData(form);
+    debugger;
      $.ajax({
           url: '/upload-files',
           type: 'POST',

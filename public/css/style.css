@@ -38,4 +38,39 @@
   padding: 20px;
   margin: 20px;
   border: 1px solid black;
+  position: relative;
+}
+
+.asset .delete-button {
+  position: absolute;
+  padding: 5px;
+  right: 0;
+  top: 0;
+  background: black;
+  color: white;
+}
+
+.asset .delete-button:hover {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.confirmation-dialog {
+  display: none;
+  background: white;
+  padding: 30px;
+  border: 1px solid gray;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  text-align: center;
+}
+
+.confirmation-dialog .name {
+  color: blue;
+}
+
+.confirmation-dialog .button {
+  margin: 10px auto;
 }

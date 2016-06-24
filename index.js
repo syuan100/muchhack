@@ -3,6 +3,9 @@ var pug = require('pug');
 var mysql = require('mysql');
 var multer  = require('multer');
 var shortid = require('shortid');
+var bodyParser = require('body-parser')
+
+var jsonParser = bodyParser.json();
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -55,7 +58,18 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
   var assetId = shortid.generate();
   var assetName = req.body['title'];
   var assetCategory = req.body['category'];
-  var assetTags = req.body['tags'];
+  var assetTags = JSON.parse(req.body['tags']);
+  var assetTagsString;
+  console.log(assetTags);
+  for(var i=0; i<assetTags.length; i++){
+    if(i === assetTags.length - 2) {
+      assetTagsString += assetTags[i];
+    } else {
+      assetTagsString += assetTags[i] + ", ";
+    }
+  }
+  console.log(assetTagsString);
+  var assetTagsString;
   var assetContext = req.body['context'];
   var assetDefinition = req.body['definition'];
   var assetDescription = req.body['asset-description'];
@@ -74,6 +88,8 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
     }
   }
 
+  var assetTagArray = assetTags;
+
   var assetQuery = "INSERT INTO asset (name, tags, category, context, description, definition, asset_uri, preview_uri, version, upload_date, download_count, view_count, approval, asset_id) VALUES (" +
     "\"" + assetName + "\", " +
     "\"" + assetTags + "\", " +
@@ -84,7 +100,7 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
     "\"" + assetPath + "\", " +
     "\"" + previewUri + "\", " +
     "1" + ", " +
-    "NOW()" + ", " +
+    "SYSDATE()" + ", " +
     "0" + ", " +
     "0" + ", " +
     "0" + ", " +
@@ -93,18 +109,33 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
   var attachmentQuery = "INSERT INTO attachements (asset_id, attachment_id, upload_date, download_count) VALUES (" +
     "\"" + assetId+ "\", " +
     "\"" + shortid.generate() + "\", " +
-    "NOW(), " +
+    "SYSDATE(), " +
     "0)";
+
+  var tagAddingCounter = 0;
 
   connection.query(assetQuery, function(err, rows, fields){
     if(err) {
       console.log(err);
-      res.send(500);
+      res.sendStatus(500);
     }
     if(rows){
-      console.log("success!");
       console.log(rows);
-      res.send(200);
+
+      for(var i=0; i<assetTagArray.length; i++) {
+        connection.query("INSERT INTO tags (name) VALUE (\"" + assetTagArray[i] + "\") ON DUPLICATE KEY UPDATE name=\"" + assetTagArray[i] + "\";", function(err, rows, fields){
+          if(err) {
+            console.log(err);
+          }
+          if(rows) {
+            tagAddingCounter++;
+            if(tagAddingCounter === (assetTagArray.length - 1)){
+              console.log("sending status");
+              res.sendStatus(200);
+            }
+          }
+        });
+      }
     }
   });
 
@@ -120,12 +151,41 @@ app.get('/list', function(req,res){
       res.render('list');
     }
     if(rows){
-      console.log("success!");
       for(var i=0; i<rows.length; i++){
         assets.push(rows[i]);
       }
-      console.log("assets:" + assets);
-      res.render('list', {assets: assets});
+      res.render('list', {assets: assets.reverse()});
+    }
+  });
+});
+
+app.post('/delete-asset', jsonParser, function(req, res){
+  // console.log(req.body);
+  var assetId = req.body.id;
+  connection.query("DELETE FROM asset WHERE asset_id=\"" + assetId + "\";", function(err, rows, fields){
+    if(err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+    if(rows){
+      console.log("deleted");
+      res.sendStatus(200);
+    }
+  });
+});
+
+app.get('/get-tags', function(req,res){
+  var tags = [];
+  connection.query("SELECT * FROM tags;", function(err, rows, fields){
+    if(err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+    if(rows){
+      for(var i=0; i<rows.length; i++){
+        tags.push(rows[i].name);
+      }
+      res.send({data: tags});
     }
   });
 });
