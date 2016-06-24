@@ -17,23 +17,32 @@ $(document).ready(function(){
   }
 
   Dropzone.options.myAwesomeDropzone = {
-    uploadMultiple: true,
+    uploadMultiple: false,
     addRemoveLinks: true,
     success: function(file, success){
-      addFormToFile(file);
+      addFormToFile(success);
     }
   };
 
   var $ogAssetForm = $($(".new-asset")[0]).clone();
+  var $ogUpdateForm = $($(".updating-asset")[0]).clone();
 
-  function addFormToFile(file){
+  function addFormToFile(success){
     var $assetForm = $ogAssetForm.clone();
+    var $updateForm = $ogUpdateForm.clone();
     var $previewBox = $(".dz-preview:not(.appended)");
     var numOfAlteredFiles = $(".new-asset.appended").length;
 
-    $assetForm.removeClass("invisible");
+    $assetForm.addClass("appended").removeClass("invisible");
+    $updateForm.addClass("appended").removeClass("invisible").addClass('hidden');
+    $assetForm.attr("data-path", success.files[0].path);
     $previewBox.addClass("appended");
     $previewBox.append($assetForm);
+    $previewBox.append($updateForm);
+
+    $.each($(".new-asset.appended"), function(i,e){
+      $(e).attr("id", Math.random().toString(36).substr(2, 9));
+    });
 
     formListeners();
   }
@@ -56,13 +65,11 @@ $(document).ready(function(){
           console.log("font");
           break;
         case "logo":
-          
           break;
         case "powerpoint":
           $parent.find(".preview-image").show();
           break;
         case "digram":
-          
           break;
         case "persona":
           $parent.find(".definition").show();
@@ -71,9 +78,86 @@ $(document).ready(function(){
           break;
       }
     });
+
+    $(".new-asset-button").off();
+    $(".new-asset-button").click(function(){
+      var $currentAssetForm = $(this).parents(".dz-preview").find(".new-asset");
+      var $currentUpdateForm = $(this).parents(".dz-preview").find(".updating-asset");
+      $currentAssetForm.show();
+      $currentUpdateForm.hide();
+    });
+
+    $(".updating-asset-button").off();
+    $(".updating-asset-button").click(function(){
+      var $currentAssetForm = $(this).parents(".dz-preview").find(".new-asset");
+      var $currentUpdateForm = $(this).parents(".dz-preview").find(".updating-asset");
+      $currentAssetForm.hide();
+      $currentUpdateForm.show();
+    });
+
+    $.ajax({
+    url: "/get-tags",
+    success: function(data){
+      currentTags = data.data;
+
+      $.each($('.asset-tags'), function(i,item){
+        $(item)
+          .textext({
+            plugins : 'tags autocomplete'
+        })
+        .bind('getSuggestions', function(e, data)
+        {
+            var list = currentTags,
+                textext = $(e.target).textext()[0],
+                query = (data ? data.query : '') || '';
+
+            $(this).trigger(
+                'setSuggestions',
+                { result : textext.itemManager().filter(list, query) }
+            );
+        });
+        $(item).removeClass("asset-tags").addClass("asset-tags-textext");
+      });
+    }
+  });
   }
 
-  // $(".upload-submit").click(function(){
+
+
+  $(".upload-submit").click(function(){
+    var $filesToUpload = $(".new-asset.appended");
+
+    $.each($filesToUpload, function(i,e){
+      var formData = new FormData(e);
+      formData.append("assetid", $(e).attr("id"));
+      formData.append("assetpath", $(e).attr("data-path"));
+      $.ajax({
+          url: '/multiple-upload-files',
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          success: function (data) {
+              success(data.id);
+          },
+          error: function (err) {
+              error();
+          }
+      });
+    });
+
+    $(this).hide();
+    $(".submitted").show();
+  });
+
+  $(".upload-more").click(function(){
+    window.location.reload();
+  });
+
+  $(".home").click(function(){
+    window.location.href = "/";
+  });
+
   //   // console.log("formsub");
   //   var form = $(".new-asset")[0];
   //   console.log(form);
@@ -94,12 +178,19 @@ $(document).ready(function(){
   //     });
   // });
 
-  var success = function(){
-    window.location.href = "/?success=true";
+  var successNumber = 0;
+  var errorNumber = 0;
+
+  var success = function(id){
+    $(".new-asset.appended#" + id).hide();
+    $(".new-asset.appended#" + id).after($("<div class='success-message'>Successfully uploaded. <a href='edit/" + id + "'>Edit Asset</div>"));
+    // window.location.href = "/?success=true";
   };
 
   var error = function(){
-    window.location.href = "/?success=false";
+    $(".new-asset.appended#" + id).hide();
+    $(".new-asset.appended#" + id).after($("<div class='error-message'>Unable to upload.</div>"));
+    // window.location.href = "/?success=false";
   };
 
 });

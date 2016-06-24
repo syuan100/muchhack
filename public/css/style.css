@@ -78,3 +78,7 @@
 .confirmation-dialog .button {
   margin: 10px auto;
 }
+
+.submitted {
+  display: none;
+}

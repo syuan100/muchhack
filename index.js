@@ -54,7 +54,7 @@ app.get('/', function (req, res) {
 app.post('/upload-files-2', upload.any(), function (req, res, next) {
   console.log(req.files);
   console.log(req.body);
-  res.sendStatus(200);
+  res.send({files: req.files});
 });
 
 app.post('/upload-files', upload.any(), function (req, res, next) {
@@ -142,6 +142,101 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
           }
         });
       }
+    }
+  });
+
+  // console.log(query);
+
+});
+
+app.post('/multiple-upload-files', upload.any(), function (req, res, next) {
+  // req.files is array of `photos` files
+  // req.body will contain the text fields, if there were any
+
+  var assetId = req.body['assetid']
+  var assetName = req.body['title'];
+  var assetCategory = req.body['category'];
+  var assetTags = JSON.parse(req.body['tags']);
+  var assetTagsString;
+  console.log(assetTags);
+  for(var i=0; i<assetTags.length; i++){
+    if(i === assetTags.length - 2) {
+      assetTagsString += assetTags[i];
+    } else {
+      assetTagsString += assetTags[i] + ", ";
+    }
+  }
+  console.log(assetTagsString);
+  var assetTagsString;
+  var assetContext = req.body['context'];
+  var assetDefinition = req.body['definition'];
+  var assetDescription = req.body['asset-description'];
+  var assetPath = req.body['assetpath'];
+  var attachementPaths = [];
+  var previewUri = "";
+  for(var i = 0; i<req.files.length; i++) {
+    if(req.files[i]['fieldname'] === 'attachment'){
+      attachementPaths.push(req.files[i]['path']);
+    }
+    if(req.files[i]['fieldname'] === 'preview-image'){
+      previewUri = req.files[i]['path'];
+    }
+  }
+
+  var assetTagArray = assetTags;
+
+  var assetQuery = "INSERT INTO asset (name, tags, category, context, description, definition, asset_uri, preview_uri, version, upload_date, download_count, view_count, approval, asset_id) VALUES (" +
+    "\"" + assetName + "\", " +
+    "\"" + assetTags + "\", " +
+    "\"" + assetCategory + "\", " +
+    "\"" + assetContext + "\", " +
+    "\"" + assetDescription + "\", " +
+    "\"" + assetDefinition + "\", " +
+    "\"" + assetPath + "\", " +
+    "\"" + previewUri + "\", " +
+    "1" + ", " +
+    "SYSDATE()" + ", " +
+    "0" + ", " +
+    "0" + ", " +
+    "0" + ", " +
+    "\"" + assetId + "\");";
+
+  var attachmentQuery = "INSERT INTO attachements (asset_id, attachment_id, upload_date, download_count) VALUES (" +
+    "\"" + assetId+ "\", " +
+    "\"" + shortid.generate() + "\", " +
+    "SYSDATE(), " +
+    "0)";
+
+  var tagAddingCounter = 0;
+
+  connection.query(assetQuery, function(err, rows, fields){
+    if(err) {
+      console.log(err);
+      res.sendStatus(500);
+    }
+    if(rows){
+      console.log(rows);
+
+      for(var i=0; i<assetTagArray.length; i++) {
+        connection.query("INSERT INTO tags (name) VALUE (\"" + assetTagArray[i] + "\") ON DUPLICATE KEY UPDATE name=\"" + assetTagArray[i] + "\";", function(err, rows, fields){
+          if(err) {
+            console.log(err);
+          }
+          if(rows) {
+            tagAddingCounter++;
+            if(tagAddingCounter === (assetTagArray.length - 1)){
+              console.log("sending status");
+              res.send({id: assetId});
+            }
+          }
+        });
+      }
+
+      if(assetTagArray.length === 0){
+        console.log("sending status");
+        res.send({id: assetId});
+      }
+
     }
   });
 

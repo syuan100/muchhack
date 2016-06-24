@@ -40,7 +40,23 @@ html(lang="en")
 
     form(action="/upload-files-2" class="dropzone" id="my-awesome-dropzone")
 
+    .button.upload-submit
+      | Submit
+
+    .submitted
+      .button.upload-more
+        | Upload More
+      .button.home
+        | Home
+
     form.new-asset.invisible(method="post", enctype="multipart/form-data")
+      .button(class="new-asset-button")
+        | New Asset
+      br
+      .button(class="updating-asset-button")
+        | Updating Asset
+      br
+      br
       | Title*:
       br
       input(type="text", name="title", class="asset-title")
@@ -99,13 +115,20 @@ html(lang="en")
         input(type="file", class="preview-image", name="preview-image")
       br
       br
-      | Asset Upload:
-      br
-      input(type="file", class="asset-upload", name="asset-upload")
-      br
-      br
       | Additional Attachments
       br
       input(type="file", class="attachment", name="attachment" id="1" multiple)
-      //- .button.upload-submit
-      //-   | Submit
+    form.updating-asset.invisible(method="post", enctype="multipart/form-data")
+      .button(class="new-asset-button")
+        | New Asset
+      br
+      .button(class="updating-asset-button")
+        | Updating Asset
+      br
+      br
+      | What asset are you updating?
+      br
+      input(type="text", name="search-asset-to-update")
+      br
+      br
+      
