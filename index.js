@@ -62,6 +62,7 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
   // req.body will contain the text fields, if there were any
 
   var assetId = shortid.generate();
+  var thumbnailText = req.body['thumbnail'];
   var assetName = req.body['title'];
   var assetCategory = req.body['category'];
   var assetTags = JSON.parse(req.body['tags']);
@@ -170,6 +171,7 @@ app.post('/multiple-upload-files', upload.any(), function (req, res, next) {
   }
   console.log(assetTagsString);
   var assetTagsString;
+  var thumbnailText = req.body['thumbnail']
   var assetContext = req.body['context'];
   var assetDefinition = req.body['definition'];
   var assetDescription = req.body['asset-description'];
@@ -187,7 +189,7 @@ app.post('/multiple-upload-files', upload.any(), function (req, res, next) {
 
   var assetTagArray = assetTags;
 
-  var assetQuery = "INSERT INTO asset (name, tags, category, context, description, definition, asset_uri, preview_uri, version, upload_date, download_count, view_count, approval, asset_id) VALUES (" +
+  var assetQuery = "INSERT INTO asset (name, tags, category, context, description, definition, asset_uri, preview_uri, version, upload_date, download_count, view_count, approval, asset_id, thumbnail) VALUES (" +
     "\"" + assetName + "\", " +
     "\"" + assetTags + "\", " +
     "\"" + assetCategory + "\", " +
@@ -201,7 +203,8 @@ app.post('/multiple-upload-files', upload.any(), function (req, res, next) {
     "0" + ", " +
     "0" + ", " +
     "0" + ", " +
-    "\"" + assetId + "\");";
+    "\"" + assetId + "\", " + 
+    "\"" + thumbnailText + "\");";
 
   var attachmentQuery = "INSERT INTO attachements (asset_id, attachment_id, upload_date, download_count) VALUES (" +
     "\"" + assetId+ "\", " +
@@ -303,7 +306,10 @@ app.get('/ajax-search', function(req,res) {
       if (err) throw err;
       for(i=0;i<rows.length;i++)
       {
-      data.push(rows[i].asset_id);
+        var assetObj = {};
+        assetObj.id = rows[i].asset_id;
+        assetObj.name = rows[i].name;
+        data.push(assetObj);
       }
       res.send(JSON.stringify(data));
     });

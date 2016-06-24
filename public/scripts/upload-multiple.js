@@ -144,6 +144,8 @@ $(document).ready(function(){
       var formData = new FormData(e);
       formData.append("assetid", $(e).attr("id"));
       formData.append("assetpath", $(e).attr("data-path"));
+      formData.append("thumbnail", $(e).parents(".dz-preview").find(".dz-image img").attr("src"));
+      debugger;
       $.ajax({
           url: '/multiple-upload-files',
           type: 'POST',
