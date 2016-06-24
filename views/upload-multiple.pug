@@ -134,9 +134,16 @@ html(lang="en")
       br
       input(type="text", name="search-asset-to-update", class="search-assets")
       .search-assets-results
-        .asset.hide
-          .pic
+        .results
+        .asset.hidden
+          img.pic
           .name
+      .selected-asset-to-update.hidden
+        img.pic
+        .name
+        .id.hidden
+        .button.cancel
+          | cancel
       br
       br
       

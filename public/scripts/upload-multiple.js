@@ -96,47 +96,67 @@ $(document).ready(function(){
     });
 
     $.ajax({
-    url: "/get-tags",
-    success: function(data){
-      currentTags = data.data;
-
-      $.each($('.asset-tags'), function(i,item){
-        $(item)
-          .textext({
-            plugins : 'tags autocomplete'
-        })
-        .bind('getSuggestions', function(e, data)
-        {
-            var list = currentTags,
-                textext = $(e.target).textext()[0],
-                query = (data ? data.query : '') || '';
-
-            $(this).trigger(
-                'setSuggestions',
-                { result : textext.itemManager().filter(list, query) }
-            );
-        });
-        $(item).removeClass("asset-tags").addClass("asset-tags-textext");
-      });
-    }
-  });
-
-  $(".search-assets").off();
-
-  $(".search-assets").on("input", function(){
-    var inputVal = $(this).val();
-    console.log("searching");
-    $.ajax({
-      url: "/ajax-search?search=" + inputVal,
-      type: "GET",
+      url: "/get-tags",
       success: function(data){
-        console.log(data);
+        currentTags = data.data;
+
+        $.each($('.asset-tags'), function(i,item){
+          $(item)
+            .textext({
+              plugins : 'tags autocomplete'
+          })
+          .bind('getSuggestions', function(e, data)
+          {
+              var list = currentTags,
+                  textext = $(e.target).textext()[0],
+                  query = (data ? data.query : '') || '';
+
+              $(this).trigger(
+                  'setSuggestions',
+                  { result : textext.itemManager().filter(list, query) }
+              );
+          });
+          $(item).removeClass("asset-tags").addClass("asset-tags-textext");
+        });
       }
     });
-  });
-}
 
+    $(".search-assets").off();
 
+    $(".search-assets").on("input", function(){
+      var inputVal = $(this).val();
+      var $searchContainer = $(this).next(".search-assets-results");
+      $searchContainer.find(".results").empty();
+      if($(this).val() == "") {
+        $searchContainer.find(".results").empty();
+      } else {
+        console.log("searching");
+        $.ajax({
+          url: "/ajax-search?search=" + inputVal,
+          type: "GET",
+          success: function(data){
+            var foundAssets = JSON.parse(data);
+            $.each(foundAssets, function(i,e){
+              var $newAssetDiv = $searchContainer.find(".asset.hidden").clone();
+              $newAssetDiv.removeClass('hidden');
+              $newAssetDiv.find(".name").text(e.name);
+              $newAssetDiv.find("img.pic").attr("src", e.thumbnail);
+              $searchContainer.find(".results").append($newAssetDiv);
+
+              // $(".results .asset").off();
+
+              // $(".results .asset").click(function(){
+              //   var $searchResults = $(this).parents(".search-assets-results");
+              //   $(this).parents(".search-assets-results").hide();
+              //   $(this).
+              // });
+
+            });
+          }
+        });
+      }
+    });
+  }
 
   $(".upload-submit").click(function(){
     var $filesToUpload = $(".new-asset.appended");
@@ -145,7 +165,6 @@ $(document).ready(function(){
       formData.append("assetid", $(e).attr("id"));
       formData.append("assetpath", $(e).attr("data-path"));
       formData.append("thumbnail", $(e).parents(".dz-preview").find(".dz-image img").attr("src"));
-      debugger;
       $.ajax({
           url: '/multiple-upload-files',
           type: 'POST',

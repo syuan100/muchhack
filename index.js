@@ -309,6 +309,7 @@ app.get('/ajax-search', function(req,res) {
         var assetObj = {};
         assetObj.id = rows[i].asset_id;
         assetObj.name = rows[i].name;
+        assetObj.thumbnail = rows[i].thumbnail;
         data.push(assetObj);
       }
       res.send(JSON.stringify(data));
