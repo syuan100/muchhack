@@ -66,15 +66,16 @@ app.post('/upload-files', upload.any(), function (req, res, next) {
   var assetCategory = req.body['category'];
   var assetTags = JSON.parse(req.body['tags']);
   var assetTagsString;
-  console.log(assetTags);
+  //console.log(assetTags);
   for(var i=0; i<assetTags.length; i++){
-    if(i === assetTags.length - 2) {
+    if(i === assetTags.length - 1) {
+      console.log(assetTags[i]);
       assetTagsString += assetTags[i];
     } else {
       assetTagsString += assetTags[i] + ", ";
     }
   }
-  console.log(assetTagsString);
+  //console.log(assetTagsString);
   var assetTagsString;
   var assetContext = req.body['context'];
   var assetDefinition = req.body['definition'];
@@ -157,10 +158,11 @@ app.post('/multiple-upload-files', upload.any(), function (req, res, next) {
   var assetName = req.body['title'];
   var assetCategory = req.body['category'];
   var assetTags = JSON.parse(req.body['tags']);
-  var assetTagsString;
-  console.log(assetTags);
+  var assetTagsString = "";
+  //console.log(assetTags);
   for(var i=0; i<assetTags.length; i++){
-    if(i === assetTags.length - 2) {
+    if(i === assetTags.length - 1) {
+      //console.log(assetTags[i]);
       assetTagsString += assetTags[i];
     } else {
       assetTagsString += assetTags[i] + ", ";
@@ -215,27 +217,23 @@ app.post('/multiple-upload-files', upload.any(), function (req, res, next) {
       res.sendStatus(500);
     }
     if(rows){
-      console.log(rows);
+      //console.log(rows);
 
       for(var i=0; i<assetTagArray.length; i++) {
-        connection.query("INSERT INTO tags (name) VALUE (\"" + assetTagArray[i] + "\") ON DUPLICATE KEY UPDATE name=\"" + assetTagArray[i] + "\";", function(err, rows, fields){
+        connection.query("INSERT IGNORE INTO tags (name) VALUE (\"" + assetTagArray[i] + "\");", function(err, rows, fields){
           if(err) {
             console.log(err);
           }
           if(rows) {
             tagAddingCounter++;
             if(tagAddingCounter === (assetTagArray.length - 1)){
-              console.log("sending status");
-              res.send({id: assetId});
+              console.log("finished with tags");
             }
           }
         });
       }
-
-      if(assetTagArray.length === 0){
-        console.log("sending status");
-        res.send({id: assetId});
-      }
+      console.log("adding asset");
+      res.send({id: assetId});
 
     }
   });

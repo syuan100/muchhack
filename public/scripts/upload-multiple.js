@@ -140,7 +140,6 @@ $(document).ready(function(){
 
   $(".upload-submit").click(function(){
     var $filesToUpload = $(".new-asset.appended");
-
     $.each($filesToUpload, function(i,e){
       var formData = new FormData(e);
       formData.append("assetid", $(e).attr("id"));
@@ -152,9 +151,11 @@ $(document).ready(function(){
           processData: false,
           contentType: false,
           success: function (data) {
+              console.log("successfully uploaded");
               success(data.id);
           },
           error: function (err) {
+              console.log("error");
               error();
           }
       });
