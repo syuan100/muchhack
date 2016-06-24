@@ -5,6 +5,7 @@ $(document).ready(function(){
   $(".context").show();
 
   $("select.category").change(function(){
+    console.log("change");
     var category = $("select.category option:selected").attr("val");
     $(".hidden").hide();
 

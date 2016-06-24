@@ -51,6 +51,12 @@ app.get('/', function (req, res) {
 //   console.log(req.body);
 // })
 
+app.post('/upload-files-2', upload.any(), function (req, res, next) {
+  console.log(req.files);
+  console.log(req.body);
+  res.sendStatus(200);
+});
+
 app.post('/upload-files', upload.any(), function (req, res, next) {
   // req.files is array of `photos` files
   // req.body will contain the text fields, if there were any
@@ -189,6 +195,10 @@ app.get('/get-tags', function(req,res){
     }
   });
 });
+
+app.get('/upload-multiple', function(req, res){
+  res.render('upload-multiple');
+})
 
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');

@@ -2,6 +2,10 @@
   display: none;
 }
 
+.invisible{
+  visibility: hidden;
+}
+
 .button {
   width: 75px;
   padding: 10px;

@@ -9,6 +9,7 @@ html(lang="en")
     link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.focus.css")
     link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.prompt.css")
     link(rel="stylesheet", type="text/css", href="scripts/textext/css/textext.plugin.tags.css")
+    link(rel="stylesheet", type="text/css", href="css/dropzone.css")
     link(rel="stylesheet", type="text/css", href="css/style.css")
 
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
@@ -25,9 +26,9 @@ html(lang="en")
 
     script(src="scripts/dropzone.js")
     script(src="scripts/form-functions.js")
-    script(src="scripts/upload.js")
+    script(src="scripts/upload-multiple.js")
   body
-    h1 Upload form
+    h1 Upload form multiple
 
     .success
       | Your file was successfully uploaded!
@@ -37,7 +38,9 @@ html(lang="en")
     .error
       | Your file was not uploaded. Please try again.
 
-    form.new-asset(method="post", enctype="multipart/form-data")
+    form(action="/upload-files-2" class="dropzone" id="my-awesome-dropzone")
+
+    form.new-asset.invisible(method="post", enctype="multipart/form-data")
       | Title*:
       br
       input(type="text", name="title", class="asset-title")
@@ -104,5 +107,5 @@ html(lang="en")
       | Additional Attachments
       br
       input(type="file", class="attachment", name="attachment" id="1" multiple)
-      .button.upload-submit
-        | Submit
+      //- .button.upload-submit
+      //-   | Submit
