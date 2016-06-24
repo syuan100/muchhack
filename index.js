@@ -295,6 +295,26 @@ app.get('/upload-multiple', function(req, res){
   res.render('upload-multiple');
 })
 
+app.get('/ajax-search', function(req,res) {
+  var searchTerm = req.query.search;
+  function titleQuery(searchTerm){
+    var data=[];
+    var titlequery = 'SELECT * FROM asset WHERE name like "%'+searchTerm+'%";';
+    console.log(titlequery);
+    connection.query(titlequery, function(err, rows, fields) {
+      if (err) throw err;
+      for(i=0;i<rows.length;i++)
+      {
+      data.push(rows[i].asset_id);
+      }
+      res.send(JSON.stringify(data));
+    });
+  };
+
+  titleQuery(searchTerm);
+
+});
+
 app.listen(3000, function () {
   console.log('Example app listening on port 3000!');
 });

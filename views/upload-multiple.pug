@@ -12,7 +12,8 @@ html(lang="en")
     link(rel="stylesheet", type="text/css", href="css/dropzone.css")
     link(rel="stylesheet", type="text/css", href="css/style.css")
 
-    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
+    //-script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js")
+    script(src="scripts/jquery-1.10.2.min.js")
     script(src="scripts/textext/js/textext.core.js")
     script(src="scripts/textext/js/textext.plugin.ajax.js")
     script(src="scripts/textext/js/textext.plugin.arrow.js")
@@ -25,6 +26,9 @@ html(lang="en")
     script(src="scripts/textext/js/textext.plugin.tags.js")
 
     script(src="scripts/dropzone.js")
+
+    script(src="scripts/typehead.js")
+
     script(src="scripts/form-functions.js")
     script(src="scripts/upload-multiple.js")
   body
@@ -128,7 +132,7 @@ html(lang="en")
       br
       | What asset are you updating?
       br
-      input(type="text", name="search-asset-to-update")
+      input(type="text", name="search-asset-to-update", class="search-assets")
       br
       br
       

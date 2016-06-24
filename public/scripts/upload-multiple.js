@@ -120,7 +120,21 @@ $(document).ready(function(){
       });
     }
   });
-  }
+
+  $(".search-assets").off();
+
+  $(".search-assets").on("input", function(){
+    var inputVal = $(this).val();
+    console.log("searching");
+    $.ajax({
+      url: "/ajax-search?search=" + inputVal,
+      type: "GET",
+      success: function(data){
+        console.log(data);
+      }
+    });
+  });
+}
 
 
 
