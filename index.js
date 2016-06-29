@@ -3,7 +3,8 @@ var pug = require('pug');
 var mysql = require('mysql');
 var multer  = require('multer');
 var shortid = require('shortid');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var config = require('./config.js');
 
 var jsonParser = bodyParser.json();
 
@@ -22,10 +23,10 @@ var app = express();
 
 var connection = mysql.createConnection({
   host     : 'localhost',
-  user     : 'root',
-  password : 'root',
+  user     : config.mysqluser,
+  password : config.mysqlpassword,
   socketPath: '/tmp/mysql.sock',
-  database : 'scar'
+  database : config.mysqldb,
 });
 
 app.set('view engine', 'pug');
